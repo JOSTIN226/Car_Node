@@ -24,11 +24,7 @@
 #define SPEED_ENCODER_MAX (0x0110)
 #define SPEED_ENCODER_TEST (11)
 
-/* 车身方向 */
-//#define NORTH (1)
-//#define EAST (2)
-//#define SOUTH (3)
-//#define WEST (4)
+
 
 extern int g_f_pit;
 extern int g_f_enable_mag_steer_control;
@@ -50,7 +46,6 @@ extern int find_mag_back_car1;
 
 extern int g_f_big_U;
 extern int g_f_big_U_2;
-extern int car_direction;//车身绝对方向-余婧添加
 
 /* 时间基准 */
 #ifdef __CONTROL_C_

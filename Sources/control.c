@@ -7,7 +7,7 @@ int g_f_enable_speed_control = 0;	/* 启用速度控制标志位 */
 int g_f_enable_mag_steer_control = 0;/* 启用电磁循迹标志位 */
 int g_f_enable_supersonic = 0;	/* 启用超声探测标志位 */
 int g_f_enable_camera_control=1;
-int car_direction=0;//车身绝对方向：1234北东南西
+
 
 /*-----------------------------------------------------------------------*/
 /* PIT中断处理函数                                                                 */
@@ -338,6 +338,7 @@ DWORD diff_time_basis_PIT(const DWORD new_time, const DWORD old_time)
 	
 	return diff;
 }
+
 #if 0
 int abs(int data)
 {

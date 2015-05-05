@@ -18,6 +18,18 @@
 #define ACTION_PUNCTURED_BALLON_STEP_CAR4_TURN2 (0x0b)	/* 车4第2次转弯 */
 
 
+/* 车身变向数据 */
+#define TURNRIGHT (1)
+#define TURNLEFT (2)
+#define UTURN (3)
+
+/* 车身方向 */
+#define NORTH (1)
+#define EAST (2)
+#define SOUTH (3)
+#define WEST (4)
+extern int car_direction;//车身绝对方向-余婧添加
+
 /* 刺气球数据 */
 #ifdef __ACTION_C_
 struct
@@ -46,7 +58,9 @@ void push_box2();
 void avoid_box();
 void fly_bridge();
 void push_box1();
-void change_direction();
+void Car_UTurn();
+void set_car_direction(SBYTE act);
+
 
 
 extern void WiFi_control_car_1_action(WORD cmd);

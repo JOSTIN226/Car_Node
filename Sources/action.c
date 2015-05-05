@@ -5,10 +5,13 @@ int flag_c_2_2=0;
 int flag_c_4_1=0;
 int flag_c_4_2=0;
 byte Road_num=0;
+int car_direction=1;//车身绝对方向：1234北东南西
+int old_car_direction=1;//车身绝对方向：1234北东南西
+
 /*------------------------------*/
 /* 车灯控制程序    掉头                                         */  
 /*------------------------------*/
-void change_direction(void)
+void Car_UTurn(void)
 {
 	g_f_enable_mag_steer_control=0;
 	set_speed_target(0);
@@ -22,9 +25,38 @@ void change_direction(void)
 	delay_ms(800);
 	LeftL=0;
 	set_steer_helm(0);
+	set_car_direction(UTURN);
 	g_f_enable_camera_control=1;
 }
 
+/*-----------------------------------------------------------------------*/
+/* 设置车身方向        act为左右转、掉头                       */
+/*-----------------------------------------------------------------------*/
+void set_car_direction(SBYTE act)
+{
+	old_car_direction=car_direction;
+	if(act==TURNRIGHT)
+	{
+		if(car_direction!=WEST)
+			car_direction+=1;
+		else
+			car_direction=1;
+	}
+	else if(act==TURNLEFT)
+	{
+		if(car_direction!=NORTH)
+			car_direction-=1;
+		else
+			car_direction=4;
+	}
+	else if(act==UTURN)
+	{
+		if(car_direction==NORTH||car_direction==EAST)
+			car_direction+=2;
+		else
+			car_direction-=2;
+	}
+}
 /*-----------------------------------------------------------------------*/
 /* 整车动作控制                                                          */
 /* RFID                                                                  */
@@ -48,7 +80,7 @@ void WiFi_control_car_2_action(WORD cmd)
 {
 	if (WIFI_CMD_NET_0_2 == cmd)//有障碍
 	{
-		change_direction();
+		Car_UTurn();
 		set_speed_target(10);
 	}
 	if (WIFI_CMD_NET_3_3 == cmd)//无障碍
