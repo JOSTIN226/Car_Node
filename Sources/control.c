@@ -16,8 +16,7 @@ void PitISR(void)
 {
 	g_f_pit = 1;
 	D0=~D0;
-	g_time_basis_PIT++;	/* 计时 */
-#if 1	
+	g_time_basis_PIT++;	/* 计时 */	
 	/* start:encoder */
 	data_encoder.is_forward = SIU.GPDI[46].B.PDI;//PC14
 	data_encoder.cnt_old = data_encoder.cnt_new;
@@ -31,22 +30,10 @@ void PitISR(void)
 		data_encoder.speed_now = 0xffff - (data_encoder.cnt_old - data_encoder.cnt_new);
 	}
 	/* end:encoder */
-#endif
 	/* 开始执行速度控制算法 */
 	if (g_f_enable_speed_control)
 	{
-		//SpeedControl();//不同路段PID,尚未调,不可用
 		contorl_speed_encoder_pid();
-	}
-	if(g_f_enable_mag_steer_control)
-	{
-		mag_read();
-		control_steer_helm();
-	}
-	if (g_f_enable_camera_control)
-	{
-		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
-		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
 	}
 //	if (g_f_enable_supersonic)
 //	{

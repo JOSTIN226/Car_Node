@@ -193,6 +193,9 @@ void intc_serial_port_2_RX(void)
 	LINFLEX_2.UARTSR.B.DRF=1;
 	
 	rev_RFID_frame(rev_ch);
+	
+	EMIOS_0.CH[3].CCR.B.FEN=0;//关摄像头场中断
+	EMIOS_0.CH[7].CCR.B.FEN=0;//关摄像头行中断
 }
 
 

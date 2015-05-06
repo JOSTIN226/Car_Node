@@ -8,9 +8,9 @@ void main(void)
 	//int flag = 1;
 	
 	init_all_and_POST();
-	set_speed_target(10);
-
-
+	g_f_enable_speed_control=0;
+	g_f_enable_supersonic=0;
+	set_speed_pwm(150);
 	/* Loop forever */
 		
 	for (;;)
@@ -35,18 +35,32 @@ void main(void)
 		if(fieldover)
 		{
 			
-			D3=1;//7ms
 			fieldover=0;
 			AnalysRoad();
+			Display_Video();
 			if(g_f_stopline)
 			{
-				set_speed_target(0);
-				g_f_enable_camera_control = 0;
+				if(g_f_red)
+				{
+					set_speed_target(0);
+					EMIOS_0.CH[3].CCR.B.FEN=0;//关场中断
+				}
+				else 
+				{
+					SteerControl();
+					EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
+					EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
+				}
 			}
-			Display_Video();
-			Send_CCD_Video();
-			D3=0;
-			//write_camera_data_to_TF();
+			else
+			{
+				SteerControl();
+				EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
+				EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
+			}
+			//Send_CCD_Video();
+//			EMIOS_0.CH[3].CSR.B.FLAG = 1;
+//			EMIOS_0.CH[3].CCR.B.FEN=1;
 		}
 #endif
 		

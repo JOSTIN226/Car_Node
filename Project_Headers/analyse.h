@@ -65,8 +65,7 @@ extern byte UpSlope;//上坡标志
 extern byte DownSlope;//下坡标志
 extern byte Slope;	//坡道标志
 extern byte turn[10];//turn[10]//统计中线的起点、拐点、终点
-extern int g_f_stopline;//停止线检测标志位
-
+extern byte g_f_stopline;
 
 //直角弯处理参数
 extern byte flag_Rightangle_l;                          //判断直角标识 0：找到直角或者直角距离小车还很远    1：是直角
@@ -74,8 +73,8 @@ extern byte flag_Rightangle_r;                          //l为左转 r为右转
 extern int RightAngleTime;					//检测到直角弯后直跑的时间
 extern byte flag_BlackRow;
 
+
 void AnalysRoad(void);
-void StopLineDetected(void);
 void Line_Init(byte lr);
 void BlackLine_Init(byte lr,byte irowb,byte irowe);
 void FindLine(byte lr);
@@ -102,8 +101,11 @@ void GetTurnPoint();
 void GetCenterLine();
 void DetectSlope();
 void DetectUpSlope();
+void DetectStopLine();
 void DetectDownSlope();
 void ReBuildWeight();
+void DetectStopLine();
+
 
 //******************************直角处理函数****************************************//
 void Analyse_Rigntangle();
@@ -131,4 +133,5 @@ void NearOffset();
 void MidOffset();
 void FarOffset();
 
+//byte StopLine;
 #endif /* ANALYSE_H_ */

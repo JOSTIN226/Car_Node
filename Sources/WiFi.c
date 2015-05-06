@@ -45,7 +45,7 @@ void execute_remote_cmd(const BYTE *data)
 //			SWORD tmp_read_rad_xyz = (SWORD)read_rad_xyz;	/* 暂存陀螺仪读取标志位 */
 //			
 //			read_rad_xyz = 0;	/* 暂存禁用陀螺仪读取，防止干扰TF卡读写 */
-//			write_steer_helm_data_to_TF();	/* 大约60ms */
+			write_steer_helm_data_to_TF();	/* 大约60ms */
 //			read_rad_xyz = tmp_read_rad_xyz;	/* 恢复陀螺仪读取标志位 */
 		}
 		else
@@ -74,21 +74,7 @@ void execute_remote_cmd(const BYTE *data)
 		case WIFI_CMD_SET_MOTOR_KD :
 		set_speed_KP(*((SWORD *)(&(data[2]))));
 		break;
-		
-		/* 陀螺仪 */
-		case WIFI_CMD_GET_GYRO_DATA :
-		g_remote_control_flags.send_gyro_data = 1;
-		break;
-		case WIFI_CMD_UNGET_GYRO_DATA :
-		g_remote_control_flags.send_gyro_data = 0;
-		break;
-		case WIFI_CMD_GET_GYRO_INTEGRAL_DATA :
-		g_remote_control_flags.send_gyro_integral = 1;
-		break;
-		case WIFI_CMD_UNGET_GYRO_INTEGRAL_DATA :
-		g_remote_control_flags.send_gyro_integral = 0;
-		break;
-		
+	
 		case WIFI_CMD_GET_SEEED_NOW :
 		g_remote_control_flags.send_seppd_now = 1;
 		break;

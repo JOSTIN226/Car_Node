@@ -5,8 +5,9 @@ int flag_c_2_2=0;
 int flag_c_4_1=0;
 int flag_c_4_2=0;
 byte Road_num=0;
+int g_f_red=0;//信号灯标志位
 int car_direction=1;//车身绝对方向：1234北东南西
-int old_car_direction=1;//车身绝对方向：1234北东南西
+int old_car_direction=1;//车身上一次绝对方向：1234北东南西
 
 /*------------------------------*/
 /* 车灯控制程序    掉头                                         */  
@@ -64,7 +65,11 @@ void set_car_direction(SBYTE act)
 /*-----------------------------------------------------------------------*/
 void RFID_control_car_2_action(DWORD site)
 {
-	if (RFID_CARD_ID_2_1 == site&&RFID_site_data.old_site==RFID_CARD_ID_2_2)
+	if (RFID_CARD_ID_2_1 == site)
+	{
+		set_steer_helm(0);
+	}
+	if (RFID_CARD_ID_2_2 == site&&RFID_site_data.old_site==RFID_CARD_ID_2_1)
 	{
 		Road_num=WIFI_ADDRESS_ROAD1;
 		send_net_cmd(Road_num,WIFI_CMD_ASK_ROAD);//请求节点发送路况信息
@@ -89,11 +94,17 @@ void WiFi_control_car_2_action(WORD cmd)
 	}
 	if (WIFI_CMD_NET_2_1 == cmd)//红灯不可通行
 	{
-		g_f_enable_camera_control=1;
+		g_f_red=1;
+		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
+		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
 	}
-	if (WIFI_CMD_NET_2_1 == cmd)//绿灯可通行
+	if (WIFI_CMD_NET_2_1 == cmd)//绿灯可通行包括停车状态与通行状态
 	{
+		g_f_red=0;
+		set_steer_helm(0);
 		set_speed_target(10);
+		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
+		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
 	}
 
 }
