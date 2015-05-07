@@ -57,7 +57,6 @@ void FieldInputCapture(void)
 {	
 	EMIOS_0.CH[3].CCR.B.FEN=0;  //关闭场中断 
 	prow=0;crow=0;
-	D1=~D1;
 	EMIOS_0.CH[7].CSR.B.FLAG = 1;//清行中断
 	EMIOS_0.CH[7].CCR.B.FEN=1;	//开启行中断
 }
@@ -173,7 +172,6 @@ void RowInputCapture(void)
 			fieldover=1; 
 		}
 	}
-	D0=~D0;
 }
 
 /*----------------------------------------------------------------------*/

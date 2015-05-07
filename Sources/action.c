@@ -92,9 +92,10 @@ void WiFi_control_car_2_action(WORD cmd)
 	{
 		send_net_cmd(Road_num,WIFI_CMD_ASK_LIGHT);//请求节点发送路灯信息
 	}
-	if (WIFI_CMD_NET_2_1 == cmd)//红灯不可通行
+	if (WIFI_CMD_START_ACTIVE == cmd)//红灯不可通行
 	{
 		g_f_red=1;
+		D1=~D1;
 		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
 		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
 	}
@@ -103,8 +104,8 @@ void WiFi_control_car_2_action(WORD cmd)
 		g_f_red=0;
 		set_steer_helm(0);
 		set_speed_target(10);
-		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
-		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
+//		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
+//		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
 	}
 
 }
@@ -131,51 +132,51 @@ void control_car_action(void)
 			WiFi_control_car_2_action(g_net_control_data.cmd);
 		}
 	}
-#if 0
-	else if (WIFI_ADDRESS_CAR_4 == g_device_NO)
-	{
-		if (RFID_site_data.is_new_site)
-		{
-			RFID_site_data.is_new_site = 0;
-			
-			RFID_control_car_4_action(RFID_site_data.site);
-		}
-		if (g_net_control_data.is_new_cmd)
-		{
-			g_net_control_data.is_new_cmd = 0;
-			
-			WiFi_control_car_4_action(g_net_control_data.cmd);
-		}
-	}
-	else if (WIFI_ADDRESS_CAR_3 == g_device_NO)
-	{
-		if (RFID_site_data.is_new_site)
-		{
-			RFID_site_data.is_new_site = 0;
-			
-			RFID_control_car_3_action(RFID_site_data.site);
-		}
-		if (g_net_control_data.is_new_cmd)
-		{
-			g_net_control_data.is_new_cmd = 0;
-			
-			WiFi_control_car_3_action(g_net_control_data.cmd);
-		}
-	}	
-	else if (WIFI_ADDRESS_CAR_1 == g_device_NO)
-	{
-		if (RFID_site_data.is_new_site)
-		{
-			RFID_site_data.is_new_site = 0;
-			
-			RFID_control_car_1_action(RFID_site_data.site);
-		}
-		if (g_net_control_data.is_new_cmd)
-		{
-			g_net_control_data.is_new_cmd = 0;
-			
-			WiFi_control_car_1_action(g_net_control_data.cmd);
-		}
-	}
-#endif
+
+//	else if (WIFI_ADDRESS_CAR_4 == g_device_NO)
+//	{
+//		if (RFID_site_data.is_new_site)
+//		{
+//			RFID_site_data.is_new_site = 0;
+//			
+//			RFID_control_car_4_action(RFID_site_data.site);
+//		}
+//		if (g_net_control_data.is_new_cmd)
+//		{
+//			g_net_control_data.is_new_cmd = 0;
+//			
+//			WiFi_control_car_4_action(g_net_control_data.cmd);
+//		}
+//	}
+//	else if (WIFI_ADDRESS_CAR_3 == g_device_NO)
+//	{
+//		if (RFID_site_data.is_new_site)
+//		{
+//			RFID_site_data.is_new_site = 0;
+//			
+//			RFID_control_car_3_action(RFID_site_data.site);
+//		}
+//		if (g_net_control_data.is_new_cmd)
+//		{
+//			g_net_control_data.is_new_cmd = 0;
+//			
+//			WiFi_control_car_3_action(g_net_control_data.cmd);
+//		}
+//	}	
+//	else if (WIFI_ADDRESS_CAR_1 == g_device_NO)
+//	{
+//		if (RFID_site_data.is_new_site)
+//		{
+//			RFID_site_data.is_new_site = 0;
+//			
+//			RFID_control_car_1_action(RFID_site_data.site);
+//		}
+//		if (g_net_control_data.is_new_cmd)
+//		{
+//			g_net_control_data.is_new_cmd = 0;
+//			
+//			WiFi_control_car_1_action(g_net_control_data.cmd);
+//		}
+//	}
+
 }

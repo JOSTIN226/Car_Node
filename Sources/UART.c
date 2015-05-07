@@ -68,7 +68,7 @@ void serial_port_0_TX_array(const BYTE data[], WORD n)
 void intc_serial_port_0_RX(void)
 {
 	BYTE rev_ch;
-	
+	D3=~D3;
 	while(!LINFLEX_0.UARTSR.B.DRF){}
 	rev_ch = (BYTE)LINFLEX_0.BDRM.B.DATA4;
 	g_serial_port_0_f = 1;

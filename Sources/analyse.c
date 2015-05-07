@@ -2200,7 +2200,6 @@ void DetectStopLine()
 			if(count>=30)
 			{
 				g_f_stopline=1;
-				D3=~D3;
 				return;
 			}
 
