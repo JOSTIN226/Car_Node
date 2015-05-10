@@ -7,6 +7,8 @@ int g_f_enable_speed_control = 0;	/* 启用速度控制标志位 */
 int g_f_enable_mag_steer_control = 0;/* 启用电磁循迹标志位 */
 int g_f_enable_supersonic = 0;	/* 启用超声探测标志位 */
 int g_f_enable_camera_control=1;
+int counter=0;
+DWORD tmp_a, tmp_b;
 
 
 /*-----------------------------------------------------------------------*/
@@ -15,7 +17,9 @@ int g_f_enable_camera_control=1;
 void PitISR(void)
 {
 	g_f_pit = 1;
-	g_time_basis_PIT++;	/* 计时 */	
+	g_time_basis_PIT++;	/* 计时 */
+	counter++;
+#if 0
 	/* start:encoder */
 	data_encoder.is_forward = SIU.GPDI[46].B.PDI;//PC14
 	data_encoder.cnt_old = data_encoder.cnt_new;
@@ -34,10 +38,17 @@ void PitISR(void)
 	{
 		contorl_speed_encoder_pid();
 	}
-//	if (g_f_enable_supersonic)
-//	{
-//		trigger_supersonic_0();
-//	}
+#endif
+	if(counter==3)
+	{
+		if (g_f_enable_supersonic)
+		{
+			trigger_supersonic_0();
+			get_supersonic_time_0();
+			LCD_Write_Num(96,6,ABS((WORD)(tmp_time.R)),5);
+		}
+		counter=0;
+	}
 #if 0
 	/* 发送位置 */
 	{

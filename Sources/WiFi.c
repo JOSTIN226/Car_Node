@@ -83,6 +83,7 @@ void execute_remote_cmd(const BYTE *data)
 		break;
 		
 		case WIFI_CMD_NET :
+		D0=~D0;//测试用
 		g_net_control_data.is_new_cmd = 1;
 		g_net_control_data.cmd = *((WORD *)(&(data[2])));
 		break;
@@ -90,7 +91,6 @@ void execute_remote_cmd(const BYTE *data)
 		case WIFI_CMD_START_ACTIVE:
 		g_start_all=1;
 //		g_f_red=1;//测试用
-//		D1=~D1;//测试用
 		break;
 	}
 }

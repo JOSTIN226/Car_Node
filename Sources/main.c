@@ -8,19 +8,20 @@ void main(void)
 	//int flag = 1;
 	
 	init_all_and_POST();
-	g_f_enable_speed_control=0;
-	g_f_enable_supersonic=0;
-	set_speed_pwm(150);
-	g_f_stopline=0;
-	//LCD_write_english_string(96,0,"T");
-	LCD_write_english_string(96,0,"T");
-	EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
+//	g_f_enable_speed_control=0;
+//	g_f_enable_supersonic=0;
+//	set_speed_pwm(150);
+//	g_f_stopline=0;
+//	LCD_write_english_string(96,0,"T");
+//	LCD_write_english_string(96,2,"R");
+
+	//EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
 
 	/* Loop forever */
 		
 	for (;;)
 	{
-		
+
 #if 1
 		/* 执行远程命令 */
 		if (REMOTE_FRAME_STATE_OK == g_remote_frame_state)
@@ -50,7 +51,7 @@ void main(void)
 			LCD_Write_Num(105,1,RoadType,2);
 			if(g_f_stopline)
 			{
-				D0=~D0;
+				//D0=~D0;
 				if(g_f_red)
 				{
 					set_speed_pwm(0);

@@ -280,28 +280,28 @@ void delay_ms(DWORD ms)
 /*-----------------------------------------------------------------------*/
 void init_all_and_POST(void)
 {
-	int i = 0;
-	/* TF卡 */
-	TCHAR *path = "0:";
+//	int i = 0;
+//	/* TF卡 */
+//	TCHAR *path = "0:";
 	
 	disable_watchdog();
 	init_modes_and_clock();
-	initEMIOS_0MotorAndSteer();
-	initEMIOS_0Image();/* 摄像头输入中断初始化 */
+//	initEMIOS_0MotorAndSteer();
+//	initEMIOS_0Image();/* 摄像头输入中断初始化 */
 	//init_pit();
-	init_led();
+//	init_led();
 	
 	//init_DIP();
-	init_serial_port_0();
-	init_serial_port_1();
+//	init_serial_port_0();
+//	init_serial_port_1();
 	//init_serial_port_2();
 	//init_ADC();
 	//init_serial_port_3();
-	//init_supersonic_receive_0();
+	init_supersonic_receive_0();
 	//init_supersonic_receive_1();
 	//init_supersonic_receive_2();
 	//init_supersonic_receive_3();
-	//init_supersonic_trigger_0();
+	init_supersonic_trigger_0();
 	//init_supersonic_trigger_1();
 	//init_supersonic_trigger_2();
 	//init_supersonic_trigger_3();
@@ -312,20 +312,20 @@ void init_all_and_POST(void)
 	
 	
 	/* 初始化SPI总线 */
-	init_DSPI_1();
-	
-	/* 开启外部总中断 */
-	enable_irq();
-	
-	/* 初始化显示屏 */
-	initLCD();
-
-	//LCD_DISPLAY();
-	LCD_Fill(0xFF);	/* 亮屏 */
-	delay_ms(50);
-	LCD_Fill(0x00);	/* 黑屏 */
-	delay_ms(50);
-#if 1	
+//	init_DSPI_1();
+//	
+//	/* 开启外部总中断 */
+//	enable_irq();
+//	
+//	/* 初始化显示屏 */
+//	initLCD();
+//
+//	//LCD_DISPLAY();
+//	LCD_Fill(0xFF);	/* 亮屏 */
+//	delay_ms(50);
+//	LCD_Fill(0x00);	/* 黑屏 */
+//	delay_ms(50);
+#if 0	
 	/* 初始化TF卡 */
 
 	LCD_P8x16Str(0,0, (BYTE*)"TF..");

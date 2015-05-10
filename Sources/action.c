@@ -90,18 +90,23 @@ void WiFi_control_car_2_action(WORD cmd)
 	}
 	if (WIFI_CMD_NET_3_3 == cmd)//无障碍
 	{
+		D1=~D1;
+		D2=~D2;
 		send_net_cmd(Road_num,WIFI_CMD_ASK_LIGHT);//请求节点发送路灯信息
 	}
-	if (WIFI_CMD_START_ACTIVE == cmd)//红灯不可通行
+	if (WIFI_CMD_NET_0_1 == cmd)//红灯不可通行
 	{
 		g_f_red=1;
 		D1=~D1;
-		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
-		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
+		D2=~D2;
+//		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
+//		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
 	}
 	if (WIFI_CMD_NET_2_1 == cmd)//绿灯可通行包括停车状态与通行状态
 	{
 		g_f_red=0;
+		D1=~D1;
+		D2=~D2;
 		set_steer_helm(0);
 		set_speed_target(10);
 //		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
@@ -127,6 +132,9 @@ void control_car_action(void)
 		}
 		if (g_net_control_data.is_new_cmd)
 		{
+			D1=~D1;
+			D2=~D2;
+			
 			g_net_control_data.is_new_cmd = 0;
 			
 			WiFi_control_car_2_action(g_net_control_data.cmd);
