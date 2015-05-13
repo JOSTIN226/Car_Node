@@ -8,6 +8,7 @@ int g_f_enable_mag_steer_control = 0;/* 启用电磁循迹标志位 */
 int g_f_enable_supersonic = 0;	/* 启用超声探测标志位 */
 int g_f_enable_camera_control=1;
 int counter=0;
+BYTE mode=0;
 DWORD tmp_a, tmp_b;
 
 
@@ -17,9 +18,10 @@ DWORD tmp_a, tmp_b;
 void PitISR(void)
 {
 	g_f_pit = 1;
+	//D0=~D0;
 	g_time_basis_PIT++;	/* 计时 */
-	counter++;
-#if 0
+	counter++;	
+
 	/* start:encoder */
 	data_encoder.is_forward = SIU.GPDI[46].B.PDI;//PC14
 	data_encoder.cnt_old = data_encoder.cnt_new;
@@ -33,12 +35,13 @@ void PitISR(void)
 		data_encoder.speed_now = 0xffff - (data_encoder.cnt_old - data_encoder.cnt_new);
 	}
 	/* end:encoder */
+
 	/* 开始执行速度控制算法 */
 	if (g_f_enable_speed_control)
 	{
+		//SpeedControl();//不同路段PID,尚未调,不可用
 		contorl_speed_encoder_pid();
 	}
-#endif
 	if(counter==3)
 	{
 		if (g_f_enable_supersonic)
@@ -58,6 +61,7 @@ void PitISR(void)
 		generate_remote_frame(WIFI_CMD_NET, data, sizeof(data));
 	}
 #endif
+	//D3=~D3;
 	EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
 	PIT.CH[1].TFLG.B.TIF = 1;	// MPC56xxB/P/S: Clear PIT 1 flag by writing 1
 }
@@ -74,8 +78,8 @@ void set_speed_pwm(int16_t speed_pwm)	//speed_pwm正为向前，负为向后
 		{
 			speed_pwm = SPEED_PWM_MAX;
 		}
-		EMIOS_0.CH[17].CBDR.R = speed_pwm;//PE5
-		EMIOS_0.CH[18].CBDR.R = 1;//PE6
+		EMIOS_0.CH[21].CBDR.R = speed_pwm;
+		EMIOS_0.CH[22].CBDR.R = 1;
 		
 	}
 	else if (speed_pwm<0)	//backward
@@ -86,13 +90,13 @@ void set_speed_pwm(int16_t speed_pwm)	//speed_pwm正为向前，负为向后
 			speed_pwm = SPEED_PWM_MAX;
 		}
 
-		EMIOS_0.CH[17].CBDR.R = 1;
-		EMIOS_0.CH[18].CBDR.R = speed_pwm;	
+		EMIOS_0.CH[21].CBDR.R = 1;
+		EMIOS_0.CH[22].CBDR.R = speed_pwm;	
 	}
 	else
 	{
-		EMIOS_0.CH[17].CBDR.R = 1;
-		EMIOS_0.CH[18].CBDR.R = 1;	
+		EMIOS_0.CH[21].CBDR.R = 1;
+		EMIOS_0.CH[22].CBDR.R = 1;	
 	}
 }
 
@@ -334,7 +338,6 @@ DWORD diff_time_basis_PIT(const DWORD new_time, const DWORD old_time)
 	
 	return diff;
 }
-
 #if 0
 int abs(int data)
 {
@@ -343,3 +346,12 @@ int abs(int data)
 	return data;
 }
 #endif
+/*-----------------------------------------------------------------------*/
+/* 拨码开关模式选择                                                */
+/*                                                              */
+/*-----------------------------------------------------------------------*/
+void ChooseMode(void)
+{
+	mode=switch1*2+switch4;
+}
+

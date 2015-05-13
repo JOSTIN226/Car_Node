@@ -171,7 +171,7 @@ byte NearWeight[ROWS]=//30-69
 **		    BlackLine[][]		//左右黑线
 ** ###################################################################
 */
-void AnalysRoad(void) 
+void FindBlackLine(void) 
 {
     byte lr=0,i;
 	LineType[0]=LineType[1]=0;
