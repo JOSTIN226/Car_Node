@@ -27,7 +27,7 @@ void Car_UTurn(void)
 	LeftL=0;
 	set_steer_helm(0);
 	set_car_direction(UTURN);
-	g_f_enable_camera_control=1;
+	EMIOS_0.CH[3].CCR.B.FEN=0;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -61,19 +61,84 @@ void set_car_direction(SBYTE act)
 /*-----------------------------------------------------------------------*/
 /* 整车动作控制                                                          */
 /* RFID                                                                  */
+/* 车1                                                                   */
+/*-----------------------------------------------------------------------*/
+void RFID_control_car_1_action(DWORD site)
+{
+	if (RFID_CARD_ID_2_4 == site&&RFID_site_data.old_site==RFID_CARD_ID_1_3)
+	{
+		Road_num=WIFI_ADDRESS_Road_Node_1;
+		send_net_cmd(Road_num,WIFI_CMD_ASK_ROAD);//请求节点发送路况信息
+	}
+}
+
+/*-----------------------------------------------------------------------*/
+/* 整车动作控制                                                          */
+/* RFID                                                                  */
 /* 车2                                                                   */
 /*-----------------------------------------------------------------------*/
 void RFID_control_car_2_action(DWORD site)
 {
-	if (RFID_CARD_ID_2_1 == site)
+//	if (RFID_CARD_ID_1_3 == site)
+//	{
+//		set_steer_helm(0);
+//	}
+	if (RFID_CARD_ID_2_4 == site&&RFID_site_data.old_site==RFID_CARD_ID_1_3)
 	{
-		set_steer_helm(0);
-	}
-	if (RFID_CARD_ID_2_2 == site&&RFID_site_data.old_site==RFID_CARD_ID_2_1)
-	{
-		Road_num=WIFI_ADDRESS_ROAD1;
+		Road_num=WIFI_ADDRESS_Road_Node_1;
 		send_net_cmd(Road_num,WIFI_CMD_ASK_ROAD);//请求节点发送路况信息
 	}
+}
+/*-----------------------------------------------------------------------*/
+/* 整车动作控制                                                          */
+/* RFID                                                                  */
+/* 车3                                                                   */
+/*-----------------------------------------------------------------------*/
+void RFID_control_car_3_action(DWORD site)
+{
+	return;
+}
+/*-----------------------------------------------------------------------*/
+/* 整车动作控制                                                          */
+/* RFID                                                                  */
+/* 车4                                                                   */
+/*-----------------------------------------------------------------------*/
+void RFID_control_car_4_action(DWORD site)
+{
+	return;
+}
+
+/*-----------------------------------------------------------------------*/
+/* 整车动作控制                                                          */
+/* WiFi                                                                  */
+/* 车1                                                                   */
+/*-----------------------------------------------------------------------*/
+void WiFi_control_car_1_action(WORD cmd)
+{
+	if (WIFI_CMD_NET_0_2 == cmd)//有障碍
+	{
+		Car_UTurn();
+		set_speed_target(10);
+	}
+	if (WIFI_CMD_ROADBLOCK_unKNOW == cmd||WIFI_CMD_ROADBLOCK_NO == cmd)//无障碍
+	{
+
+		send_net_cmd(Road_num,WIFI_CMD_ASK_LIGHT);//请求节点发送路灯信息
+	}
+	if (WIFI_CMD_LIGHT_RED == cmd)//红灯不可通行
+	{
+		g_f_red=1;
+
+	}
+	if (WIFI_CMD_LIGHT_YELLOW == cmd||WIFI_CMD_LIGHT_GREEN==cmd)//绿灯可通行包括停车状态与通行状态
+	{
+		g_f_red=0;
+		set_steer_helm(0);
+		set_speed_target(10);
+//		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
+//		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
+	}
+	return;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -97,22 +162,35 @@ void WiFi_control_car_2_action(WORD cmd)
 	if (WIFI_CMD_NET_0_1 == cmd)//红灯不可通行
 	{
 		g_f_red=1;
-		D1=~D1;
-		D2=~D2;
-//		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
-//		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
+
 	}
 	if (WIFI_CMD_NET_2_1 == cmd)//绿灯可通行包括停车状态与通行状态
 	{
 		g_f_red=0;
-		D1=~D1;
-		D2=~D2;
 		set_steer_helm(0);
 		set_speed_target(10);
 //		EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
 //		EMIOS_0.CH[3].CCR.B.FEN=1;//开场中断
 	}
 
+}
+/*-----------------------------------------------------------------------*/
+/* 整车动作控制                                                          */
+/* WiFi                                                                  */
+/* 车3                                                                   */
+/*-----------------------------------------------------------------------*/
+void WiFi_control_car_3_action(WORD cmd)
+{
+	return;
+}
+/*-----------------------------------------------------------------------*/
+/* 整车动作控制                                                          */
+/* WiFi                                                                  */
+/* 车4                                                                   */
+/*-----------------------------------------------------------------------*/
+void WiFi_control_car_4_action(WORD cmd)
+{
+	return;
 }
 
 
@@ -132,8 +210,6 @@ void control_car_action(void)
 		}
 		if (g_net_control_data.is_new_cmd)
 		{
-			D1=~D1;
-			D2=~D2;
 			
 			g_net_control_data.is_new_cmd = 0;
 			
@@ -141,50 +217,50 @@ void control_car_action(void)
 		}
 	}
 
-//	else if (WIFI_ADDRESS_CAR_4 == g_device_NO)
-//	{
-//		if (RFID_site_data.is_new_site)
-//		{
-//			RFID_site_data.is_new_site = 0;
-//			
-//			RFID_control_car_4_action(RFID_site_data.site);
-//		}
-//		if (g_net_control_data.is_new_cmd)
-//		{
-//			g_net_control_data.is_new_cmd = 0;
-//			
-//			WiFi_control_car_4_action(g_net_control_data.cmd);
-//		}
-//	}
-//	else if (WIFI_ADDRESS_CAR_3 == g_device_NO)
-//	{
-//		if (RFID_site_data.is_new_site)
-//		{
-//			RFID_site_data.is_new_site = 0;
-//			
-//			RFID_control_car_3_action(RFID_site_data.site);
-//		}
-//		if (g_net_control_data.is_new_cmd)
-//		{
-//			g_net_control_data.is_new_cmd = 0;
-//			
-//			WiFi_control_car_3_action(g_net_control_data.cmd);
-//		}
-//	}	
-//	else if (WIFI_ADDRESS_CAR_1 == g_device_NO)
-//	{
-//		if (RFID_site_data.is_new_site)
-//		{
-//			RFID_site_data.is_new_site = 0;
-//			
-//			RFID_control_car_1_action(RFID_site_data.site);
-//		}
-//		if (g_net_control_data.is_new_cmd)
-//		{
-//			g_net_control_data.is_new_cmd = 0;
-//			
-//			WiFi_control_car_1_action(g_net_control_data.cmd);
-//		}
-//	}
+	else if (WIFI_ADDRESS_CAR_4 == g_device_NO)
+	{
+		if (RFID_site_data.is_new_site)
+		{
+			RFID_site_data.is_new_site = 0;
+			
+			RFID_control_car_4_action(RFID_site_data.site);
+		}
+		if (g_net_control_data.is_new_cmd)
+		{
+			g_net_control_data.is_new_cmd = 0;
+			
+			WiFi_control_car_4_action(g_net_control_data.cmd);
+		}
+	}
+	else if (WIFI_ADDRESS_CAR_3 == g_device_NO)
+	{
+		if (RFID_site_data.is_new_site)
+		{
+			RFID_site_data.is_new_site = 0;
+			
+			RFID_control_car_3_action(RFID_site_data.site);
+		}
+		if (g_net_control_data.is_new_cmd)
+		{
+			g_net_control_data.is_new_cmd = 0;
+			
+			WiFi_control_car_3_action(g_net_control_data.cmd);
+		}
+	}	
+	else if (WIFI_ADDRESS_CAR_1 == g_device_NO)
+	{
+		if (RFID_site_data.is_new_site)
+		{
+			RFID_site_data.is_new_site = 0;
+			
+			RFID_control_car_1_action(RFID_site_data.site);
+		}
+		if (g_net_control_data.is_new_cmd)
+		{
+			g_net_control_data.is_new_cmd = 0;
+			
+			WiFi_control_car_1_action(g_net_control_data.cmd);
+		}
+	}
 
 }

@@ -50,6 +50,18 @@
 #define WIFI_CMD_ASK_ROAD (0x0116)
 #define WIFI_CMD_ASK_LIGHT (0x0117)
 
+#define WIFI_CMD_LIGHT_RED     (0x0120) //红灯
+#define WIFI_CMD_LIGHT_YELLOW     (0x0121) //黄灯
+#define WIFI_CMD_LIGHT_GREEN     (0x0122) //绿灯
+
+#define WIFI_CMD_ROADBLOCK_NO  (0x0130) //无路障
+#define WIFI_CMD_ROADBLOCK_YES  (0x0131) //有路障
+#define WIFI_CMD_ROADBLOCK_unKNOW  (0x0132) //路障未知
+
+#define WIFI_CMD_ROADBLOCK_REPORT_NO  (0x0135) //车辆反馈无路障
+#define WIFI_CMD_ROADBLOCK_REPORT_YES  (0x0136) //车辆反馈有路障
+
+
 
 #define WIFI_NET_CMD_CAR_REPORT_CURRENT_SITE (0x0001)	/* 车报告当前读到的位置 */
 #define WIFI_NET_CMD_CAR_REPORT_CACHE_SITE (0x0002)	/* 车报告缓存的位置 即最近一次读到的位置 */
@@ -74,7 +86,7 @@
 #define WIFI_ADDRESS_ANDRIUD_YE (9)	/* Andriud上位机 of 叶川 */
 #define WIFI_ADDRESS_ANDRIUD_JIAO (10)	/* Andriud上位机 of 焦剑 */
 #define WIFI_ADDRESS_ANDRIUD_YU (11)	/* Andriud上位机 of 余婧 */
-#define WIFI_ADDRESS_ROAD1 (12)
+#define WIFI_ADDRESS_Road_Node_1 (2)
 #define WIFI_ADDRESS_BROADCAST (0xFF)	/* 广播地址 */
 
 extern BYTE remote_frame_data[];

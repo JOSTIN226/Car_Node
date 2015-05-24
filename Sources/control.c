@@ -3,14 +3,21 @@
 
 
 int g_f_pit = 0;
+int g_f_enable_mag_steer_control = 0;
 int g_f_enable_speed_control = 0;	/* 启用速度控制标志位 */
-int g_f_enable_mag_steer_control = 0;/* 启用电磁循迹标志位 */
-int g_f_enable_supersonic = 0;	/* 启用超声探测标志位 */
-int g_f_enable_camera_control=1;
+int g_f_enable_supersonic=0;	/* 启用超声探测标志位 */
+int speed = 0;
+int update_steer_helm_basement_to_steer_helm(void);
+int g_f_big_U=0;
+int g_f_big_U_2=0;
 int counter=0;
-BYTE mode=0;
+
 DWORD tmp_a, tmp_b;
 
+
+/*-----------------------------------------------------------------------*/
+/* 舵机初始化 	                                                                      */
+/*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
 /* PIT中断处理函数                                                                 */
@@ -42,16 +49,16 @@ void PitISR(void)
 		//SpeedControl();//不同路段PID,尚未调,不可用
 		contorl_speed_encoder_pid();
 	}
-	if(counter==3)
-	{
-		if (g_f_enable_supersonic)
-		{
-			trigger_supersonic_0();
-			get_supersonic_time_0();
-			LCD_Write_Num(96,6,ABS((WORD)(tmp_time.R)),5);
-		}
-		counter=0;
-	}
+//	if(counter==3)
+//	{
+//		if (g_f_enable_supersonic)
+//		{
+//			trigger_supersonic_0();
+//			get_supersonic_time_0();
+//			LCD_Write_Num(96,6,ABS((WORD)(tmp_time.R)),5);
+//		}
+//		counter=0;
+//	}
 #if 0
 	/* 发送位置 */
 	{
@@ -61,7 +68,6 @@ void PitISR(void)
 		generate_remote_frame(WIFI_CMD_NET, data, sizeof(data));
 	}
 #endif
-	//D3=~D3;
 	EMIOS_0.CH[3].CSR.B.FLAG = 1;//清场中断标志位
 	PIT.CH[1].TFLG.B.TIF = 1;	// MPC56xxB/P/S: Clear PIT 1 flag by writing 1
 }
@@ -158,10 +164,11 @@ static SWORD get_e0()
 void contorl_speed_encoder_pid(void)
 {
 	SWORD d_speed_pwm;
-	SWORD e0=get_e0();
-	static SWORD e1=0;//【问川叶】
+	SWORD e0;
+	static SWORD e1=0;
 	static SWORD e2=0;
 	static SWORD speed_pwm=SPEED_PWM_MIN;
+	e0=get_e0();
 	d_speed_pwm=(SWORD)(data_speed_pid.p*(e0-e1));       //P控制
 	d_speed_pwm+=(SWORD)(data_speed_pid.d*(e0+e2-2*e1));
 	d_speed_pwm+=(SWORD)(data_speed_pid.i*(e0));		
@@ -346,12 +353,3 @@ int abs(int data)
 	return data;
 }
 #endif
-/*-----------------------------------------------------------------------*/
-/* 拨码开关模式选择                                                */
-/*                                                              */
-/*-----------------------------------------------------------------------*/
-void ChooseMode(void)
-{
-	mode=switch1*2+switch4;
-}
-

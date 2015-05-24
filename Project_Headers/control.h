@@ -24,13 +24,9 @@
 #define SPEED_ENCODER_MAX (0x0110)
 #define SPEED_ENCODER_TEST (11)
 
-
-extern BYTE mode;
 extern int g_f_pit;
 extern int g_f_enable_mag_steer_control;
 extern int g_f_enable_speed_control;
-extern int g_f_enable_camera_control;
-
 extern int g_f_enable_rad_control_1;
 extern int g_f_enable_rad_control_2;
 extern int g_f_enable_speed_control_2;
@@ -46,6 +42,8 @@ extern int find_mag_back_car1;
 
 extern int g_f_big_U;
 extern int g_f_big_U_2;
+extern int counter;
+
 
 /* 时间基准 */
 #ifdef __CONTROL_C_
@@ -53,7 +51,6 @@ DWORD g_time_basis_PIT;
 #else
 extern const DWORD g_time_basis_PIT;
 #endif
-
 
 /* 方向舵机上层数据 */
 #ifdef __CONTROL_C_
@@ -166,7 +163,7 @@ extern void control_angle_steer_helm(int angle_target);
 extern void control_speed_motor(int speed_target);
 extern int abs(int data);
 extern void set_steer_helm(SWORD helmData);
-extern void ChooseMode(void);
+
 
 
 
